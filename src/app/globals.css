@@ -1142,8 +1142,46 @@ html, body {
   box-sizing: border-box;
   max-width: 100%;
   min-width: 0;
+  min-height: 48px;
   -webkit-appearance: none;
   appearance: none;
+}
+
+.pill-group {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.pill-btn {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid var(--border-color);
+  border-radius: 100px;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-family: var(--font-thai);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+}
+
+.pill-btn:hover:not(:disabled) {
+  border-color: var(--primary-light);
+  background: var(--primary-ultra-light);
+}
+
+.pill-btn.active {
+  background: var(--primary-ultra-light);
+  border-color: var(--primary);
+  color: var(--primary-dark);
+}
+
+.pill-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 input[type="date"].form-input {
