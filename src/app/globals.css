@@ -880,3 +880,470 @@ html, body {
   padding: 0 24px;
   line-height: 1.5;
 }
+
+/* ============================================================
+   Profile Page
+   ============================================================ */
+
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-page);
+}
+
+.profile-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--pink) 100%);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.profile-header-logo {
+  flex-shrink: 0;
+}
+
+.profile-header-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+/* Tab Navigation */
+.profile-tab-nav {
+  display: flex;
+  background: var(--bg-card);
+  border-bottom: 2px solid var(--border-color);
+  position: sticky;
+  top: 72px;
+  z-index: 9;
+}
+
+.profile-tab-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 4px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-family: var(--font-thai);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+  margin-bottom: -2px;
+}
+
+.profile-tab-btn--active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+/* Content Area */
+.profile-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.profile-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+/* Cards */
+.profile-card {
+  background: var(--bg-card);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.profile-card-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-top: -8px;
+}
+
+/* Profile Identity Card */
+.profile-identity-card {
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid var(--primary-light);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.profile-avatar-placeholder {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--primary-ultra-light);
+  border: 3px solid var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.profile-identity-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.profile-identity-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 2px 0 0;
+}
+
+/* Quiz Summary */
+.quiz-summary-card {
+  background: var(--primary-ultra-light);
+  border: 1px solid var(--primary-light);
+  border-radius: var(--border-radius-sm);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quiz-score-row,
+.quiz-level-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.quiz-score-label,
+.quiz-level-label {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.quiz-score-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.quiz-level-badge {
+  padding: 4px 14px;
+  border-radius: 100px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.quiz-completed-at {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.empty-state-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+}
+
+.empty-state {
+  font-size: 1rem;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 12px 0;
+}
+
+.empty-state-sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Forms */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.form-input {
+  padding: 12px 14px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-thai);
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  background: var(--bg-card);
+  transition: border-color var(--transition);
+  width: 100%;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.form-textarea {
+  padding: 12px 14px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-thai);
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  background: var(--bg-card);
+  transition: border-color var(--transition);
+  width: 100%;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.form-error {
+  font-size: 1rem;
+  color: var(--red);
+  margin: 0;
+}
+
+/* Menstrual Result */
+.menstrual-result-card {
+  background: var(--primary-ultra-light);
+  border: 2px solid var(--primary-light);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: scaleIn 0.3s ease;
+}
+
+.menstrual-result-icon { margin-bottom: 4px; }
+
+.menstrual-result-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.menstrual-result-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.menstrual-result-date {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--pink);
+}
+
+.menstrual-result-note {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 300px;
+}
+
+.menstrual-result-flex {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Record Lists */
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-light) transparent;
+}
+
+.record-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.record-list::-webkit-scrollbar-thumb {
+  background: var(--primary-light);
+  border-radius: 4px;
+}
+
+.record-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.menstrual-record-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px;
+  background: var(--bg-page);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.record-date-badge {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.record-body { flex: 1; }
+
+.record-check-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.record-check-date {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--pink);
+  margin: 2px 0 0;
+}
+
+.record-note {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 4px 0 0;
+}
+
+/* Self Exam Records */
+.self-exam-record-item {
+  padding: 14px;
+  background: var(--bg-page);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.self-exam-record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.record-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-icon-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-xs);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-family: var(--font-thai);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-icon-sm:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-icon-sm--danger {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.self-exam-note {
+  font-size: 1rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-thai);
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-icon--success {
+  background: var(--green);
+  color: white;
+}
+
+.btn-icon--cancel {
+  background: var(--border-color);
+  color: var(--text-secondary);
+}
+
