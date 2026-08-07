@@ -400,17 +400,49 @@ export default function AppointmentPage() {
                   
                   if (editingId === r.id) {
                     return (
-                      <div key={r.id} className="record-item" style={{ flexDirection: 'column', gap: '8px', border: '2px solid var(--primary)' }}>
-                        <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-                          <input type="date" className="form-input" style={{ flex: 1, padding: '8px' }} value={editApptDate} onChange={e => setEditApptDate(e.target.value)} />
-                          <input type="time" className="form-input" style={{ flex: 1, padding: '8px' }} value={editApptTime} onChange={e => setEditApptTime(e.target.value)} />
-                        </div>
-                        <input type="text" className="form-input" style={{ padding: '8px' }} placeholder="แพทย์ผู้ตรวจ" value={editDoctorName} onChange={e => setEditDoctorName(e.target.value)} />
-                        <input type="text" className="form-input" style={{ padding: '8px' }} placeholder="โรงพยาบาล" value={editHospitalName} onChange={e => setEditHospitalName(e.target.value)} />
-                        <textarea className="form-textarea" style={{ padding: '8px' }} rows={2} placeholder="หมายเหตุ" value={editNote} onChange={e => setEditNote(e.target.value)} />
+                      <div key={r.id} className="record-item" style={{ flexDirection: 'column', gap: '16px', border: '2px solid var(--primary)', backgroundColor: 'var(--primary-ultra-light)' }}>
                         
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', marginTop: '4px' }}>
-                          <span style={{ fontSize: '0.9rem', color: '#666', fontWeight: 600 }}>ตั้งค่าการแจ้งเตือน:</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--primary-dark)', fontWeight: 700, marginBottom: '4px' }}>
+                          <Pencil size={18} />
+                          แก้ไขการนัดหมาย
+                        </div>
+
+                        <div className="form-group" style={{ display: 'flex', gap: '8px', flexDirection: 'row' }}>
+                          <div style={{ flex: 1 }}>
+                            <label className="form-label" style={{ fontSize: '0.9rem' }}>วันที่</label>
+                            <input type="date" className="form-input" value={editApptDate} onChange={e => setEditApptDate(e.target.value)} />
+                          </div>
+                          <div style={{ flex: 1 }}>
+                            <label className="form-label" style={{ fontSize: '0.9rem' }}>เวลา</label>
+                            <input type="time" className="form-input" value={editApptTime} onChange={e => setEditApptTime(e.target.value)} />
+                          </div>
+                        </div>
+
+                        <div className="form-group">
+                          <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem' }}>
+                            <Stethoscope size={14} /> แพทย์ผู้ตรวจ
+                          </label>
+                          <input type="text" className="form-input" placeholder="ระบุชื่อแพทย์ (ทางเลือก)" value={editDoctorName} onChange={e => setEditDoctorName(e.target.value)} />
+                        </div>
+                        
+                        <div className="form-group">
+                          <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem' }}>
+                            <Building2 size={14} /> โรงพยาบาล/คลินิก
+                          </label>
+                          <input type="text" className="form-input" placeholder="ระบุชื่อโรงพยาบาล (ทางเลือก)" value={editHospitalName} onChange={e => setEditHospitalName(e.target.value)} />
+                        </div>
+
+                        <div className="form-group">
+                          <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem' }}>
+                            <FileText size={14} /> หมายเหตุเพิ่มเติม
+                          </label>
+                          <textarea className="form-textarea" rows={2} placeholder="โน้ตเพิ่มเติม" value={editNote} onChange={e => setEditNote(e.target.value)} />
+                        </div>
+                        
+                        <div className="form-group">
+                          <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem' }}>
+                            <Clock size={14} /> ตั้งค่าการแจ้งเตือน
+                          </label>
                           <div className="pill-group">
                             <button 
                               className={`pill-btn ${editReminderDays === 1 ? 'active' : ''}`} 
@@ -427,9 +459,13 @@ export default function AppointmentPage() {
                           </div>
                         </div>
                         
-                        <div className="record-actions" style={{ width: '100%', justifyContent: 'flex-end', marginTop: '8px' }}>
-                          <button className="btn btn-primary" onClick={() => handleSaveEdit(r.id)} style={{ padding: '8px 16px', flex: 1 }}><Check size={16} /> บันทึก</button>
-                          <button className="btn btn-secondary" onClick={() => setEditingId(null)} style={{ padding: '8px 16px', flex: 1 }}><X size={16} /> ยกเลิก</button>
+                        <div className="record-actions" style={{ width: '100%', gap: '8px', marginTop: '8px' }}>
+                          <button className="btn btn-primary" onClick={() => handleSaveEdit(r.id)} style={{ flex: 1, padding: '12px' }}>
+                            <Check size={18} /> บันทึกการแก้ไข
+                          </button>
+                          <button className="btn btn-secondary" onClick={() => setEditingId(null)} style={{ flex: 1, padding: '12px' }}>
+                            <X size={18} /> ยกเลิก
+                          </button>
                         </div>
                       </div>
                     )
@@ -444,20 +480,19 @@ export default function AppointmentPage() {
                         
                         <div className="record-actions" style={{ marginTop: 0 }}>
                           {deleteConfirmId === r.id ? (
-                            <div style={{ display: 'flex', gap: '6px' }}>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                              <span style={{ fontSize: '0.9rem', color: 'var(--red)', fontWeight: 600 }}>ยืนยันลบ?</span>
                               <button 
-                                className="btn" 
-                                style={{ padding: '6px 14px', fontSize: '0.95rem', backgroundColor: 'var(--red)', color: 'white', minHeight: '36px' }} 
+                                style={{ padding: '8px', backgroundColor: 'var(--red)', color: 'white', border: 'none', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} 
                                 onClick={() => handleDelete(r.id)}
                               >
-                                ยืนยันลบ
+                                <Check size={20} strokeWidth={3} />
                               </button>
                               <button 
-                                className="btn btn-secondary" 
-                                style={{ padding: '6px 14px', fontSize: '0.95rem', minHeight: '36px' }} 
+                                style={{ padding: '8px', backgroundColor: '#e2e8f0', color: 'var(--text-secondary)', border: 'none', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} 
                                 onClick={() => setDeleteConfirmId(null)}
                               >
-                                ยกเลิก
+                                <X size={20} strokeWidth={3} />
                               </button>
                             </div>
                           ) : (
