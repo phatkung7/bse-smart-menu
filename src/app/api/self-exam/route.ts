@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { verifyLiffToken, ensureUser } from '@/lib/liff-auth'
-
+import { pushMessage } from '@/lib/line-client'
+import { buildSelfExamSuccessMessage } from '@/lib/line-messages/self-exam-success'
 /**
  * GET /api/self-exam
  * ดึงประวัติการบันทึกผลตรวจเต้านมของผู้ใช้
@@ -67,6 +68,14 @@ export async function POST(req: NextRequest) {
     console.error('[SelfExam] Insert error:', dbError)
     return NextResponse.json({ error: 'Database error' }, { status: 500 })
   }
+
+  // Push Flex Message ยืนยันการบันทึก
+  const liffBaseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? ''
+  const examDateObj = new Date(data.exam_date)
+  const msg = buildSelfExamSuccessMessage(examDateObj, data.note, liffBaseUrl)
+  pushMessage(userId, [msg]).catch((err) =>
+    console.error('[SelfExam] Push message failed:', err)
+  )
 
   return NextResponse.json({ success: true, record: data })
 }

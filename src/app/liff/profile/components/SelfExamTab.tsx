@@ -27,11 +27,24 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
   const [editNote, setEditNote] = useState('')
   const [editDate, setEditDate] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
+  const [successMsg, setSuccessMsg] = useState('')
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
 
   const authHeaders = (): Record<string, string> => {
     if (idToken) return { 'x-id-token': idToken }
     return { 'x-line-user-id': lineUserId }
+  }
+
+  const showSuccess = (msg: string) => {
+    setSuccessMsg(msg)
+    setErrorMsg('')
+    setTimeout(() => setSuccessMsg(''), 3000)
+  }
+
+  const showError = (msg: string) => {
+    setErrorMsg(msg)
+    setSuccessMsg('')
+    setTimeout(() => setErrorMsg(''), 5000)
   }
 
   const fetchRecords = async () => {
@@ -46,15 +59,22 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
   useEffect(() => { fetchRecords() }, [])
 
   const handleAdd = async () => {
-    if (!note.trim()) { setErrorMsg('กรุณากรอกบันทึกผลการตรวจ'); return }
-    setSaving(true); setErrorMsg('')
+    if (!note.trim()) { showError('กรุณากรอกบันทึกผลการตรวจ'); return }
+    setSaving(true); setErrorMsg(''); setSuccessMsg('')
     const res = await fetch('/api/self-exam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id_token: idToken, line_user_id: lineUserId, exam_date: examDate, note }),
     })
-    if (res.ok) { setNote(''); setExamDate(new Date().toISOString().split('T')[0]); await fetchRecords() }
-    else { const e = await res.json(); setErrorMsg(e.error ?? 'เกิดข้อผิดพลาด') }
+    if (res.ok) {
+      setNote('')
+      setExamDate(new Date().toISOString().split('T')[0])
+      showSuccess('บันทึกข้อมูลสำเร็จ')
+      await fetchRecords()
+    } else {
+      const e = await res.json()
+      showError(e.error ?? 'บันทึกข้อมูลไม่สำเร็จ')
+    }
     setSaving(false)
   }
 
@@ -64,13 +84,20 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
   }
 
   const handleSaveEdit = async (id: string) => {
-    if (!editNote.trim()) return
+    if (!editNote.trim()) { showError('กรุณากรอกบันทึกผลการตรวจ'); return }
     const res = await fetch(`/api/self-exam/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id_token: idToken, line_user_id: lineUserId, exam_date: editDate, note: editNote }),
     })
-    if (res.ok) { setEditingId(null); await fetchRecords() }
+    if (res.ok) {
+      setEditingId(null)
+      showSuccess('แก้ไขข้อมูลสำเร็จ')
+      await fetchRecords()
+    } else {
+      const e = await res.json()
+      showError(e.error ?? 'แก้ไขข้อมูลไม่สำเร็จ')
+    }
   }
 
   const handleDelete = async (id: string) => {
@@ -78,13 +105,31 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
       method: 'DELETE',
       headers: authHeaders(),
     })
-    if (res.ok) { setDeleteConfirmId(null); await fetchRecords() }
+    if (res.ok) {
+      setDeleteConfirmId(null)
+      showSuccess('ลบข้อมูลสำเร็จ')
+      await fetchRecords()
+    } else {
+      const e = await res.json()
+      showError(e.error ?? 'ลบข้อมูลไม่สำเร็จ')
+    }
   }
 
   const todayStr = new Date().toISOString().split('T')[0]
 
   return (
     <div className="profile-tab-content">
+      {successMsg && (
+        <div style={{ position: 'fixed', top: '90px', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '360px', backgroundColor: '#D4EDDA', color: '#155724', padding: '12px 16px', borderRadius: '12px', border: '1px solid #C3E6CB', fontWeight: 'bold', fontSize: '1rem', zIndex: 9999, boxShadow: '0 4px 12px rgba(0,0,0,0.15)', textAlign: 'center', animation: 'scaleIn 0.3s ease' }}>
+          {successMsg}
+        </div>
+      )}
+      {errorMsg && (
+        <div style={{ position: 'fixed', top: '90px', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '360px', backgroundColor: '#F8D7DA', color: '#721C24', padding: '12px 16px', borderRadius: '12px', border: '1px solid #F5C6CB', fontWeight: 'bold', fontSize: '1rem', zIndex: 9999, boxShadow: '0 4px 12px rgba(0,0,0,0.15)', textAlign: 'center', animation: 'scaleIn 0.3s ease' }}>
+          {errorMsg}
+        </div>
+      )}
+
       {/* Form เพิ่มบันทึกใหม่ */}
       <div className="profile-card">
         <h2 className="profile-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -106,7 +151,6 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
             onChange={e => setNote(e.target.value)}
           />
         </div>
-        {errorMsg && <p className="form-error">{errorMsg}</p>}
         <button className="btn btn-primary btn-large" onClick={handleAdd} disabled={saving || !note.trim()}>
           {saving ? <Loader2 size={18} className="animate-spin" /> : <PlusCircle size={18} />}
           {saving ? 'กำลังบันทึก...' : 'บันทึก'}

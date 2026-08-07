@@ -21,10 +21,23 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
   const [records, setRecords] = useState<MenstrualRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [selectedDate, setSelectedDate] = useState('')
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
   const [note, setNote] = useState('')
   const [savedResult, setSavedResult] = useState<{ checkStart: Date; checkEnd: Date } | null>(null)
   const [errorMsg, setErrorMsg] = useState('')
+  const [successMsg, setSuccessMsg] = useState('')
+
+  const showSuccess = (msg: string) => {
+    setSuccessMsg(msg)
+    setErrorMsg('')
+    setTimeout(() => setSuccessMsg(''), 3000)
+  }
+
+  const showError = (msg: string) => {
+    setErrorMsg(msg)
+    setSuccessMsg('')
+    setTimeout(() => setErrorMsg(''), 5000)
+  }
 
   const fetchRecords = async () => {
     const headers: Record<string, string> = {}
@@ -45,11 +58,12 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
 
   const handleSave = async () => {
     if (!selectedDate) {
-      setErrorMsg('กรุณาเลือกวันที่ประจำเดือนมา')
+      showError('กรุณาเลือกวันที่ประจำเดือนมา')
       return
     }
     setSaving(true)
     setErrorMsg('')
+    setSuccessMsg('')
     setSavedResult(null)
 
     const res = await fetch('/api/menstrual', {
@@ -71,10 +85,11 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
       })
       setSelectedDate('')
       setNote('')
+      showSuccess('บันทึกข้อมูลสำเร็จ')
       await fetchRecords()
     } else {
       const err = await res.json()
-      setErrorMsg(err.error ?? 'เกิดข้อผิดพลาด กรุณาลองใหม่')
+      showError(err.error ?? 'บันทึกข้อมูลไม่สำเร็จ')
     }
     setSaving(false)
   }
@@ -83,6 +98,17 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
 
   return (
     <div className="profile-tab-content">
+      {successMsg && (
+        <div style={{ position: 'fixed', top: '90px', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '360px', backgroundColor: '#D4EDDA', color: '#155724', padding: '12px 16px', borderRadius: '12px', border: '1px solid #C3E6CB', fontWeight: 'bold', fontSize: '1rem', zIndex: 9999, boxShadow: '0 4px 12px rgba(0,0,0,0.15)', textAlign: 'center', animation: 'scaleIn 0.3s ease' }}>
+          {successMsg}
+        </div>
+      )}
+      {errorMsg && (
+        <div style={{ position: 'fixed', top: '90px', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '360px', backgroundColor: '#F8D7DA', color: '#721C24', padding: '12px 16px', borderRadius: '12px', border: '1px solid #F5C6CB', fontWeight: 'bold', fontSize: '1rem', zIndex: 9999, boxShadow: '0 4px 12px rgba(0,0,0,0.15)', textAlign: 'center', animation: 'scaleIn 0.3s ease' }}>
+          {errorMsg}
+        </div>
+      )}
+
       {/* Form บันทึกวันประจำเดือน */}
       <div className="profile-card">
         <h2 className="profile-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -112,8 +138,6 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
             onChange={e => setNote(e.target.value)}
           />
         </div>
-
-        {errorMsg && <p className="form-error">{errorMsg}</p>}
 
         <button
           className="btn btn-primary btn-large"
@@ -165,16 +189,21 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
               const checkEnd = addDays(d, 10)
               return (
                 <div key={r.id} className="menstrual-record-item">
-                  <div className="record-date-badge">
-                    {format(d, 'd MMM yy', { locale: th })}
-                  </div>
-                  <div className="record-body">
-                    <p className="record-check-label">ควรตรวจ:</p>
-                    <p className="record-check-date">
-                      {format(checkStart, 'd MMM', { locale: th })} –{' '}
-                      {format(checkEnd, 'd MMM yyyy', { locale: th })}
-                    </p>
-                    {r.note && <p className="record-note">{r.note}</p>}
+                  <div className="record-body" style={{ width: '100%' }}>
+                    <div style={{ marginBottom: '6px' }}>
+                      <p className="record-check-label">📅 ประจำเดือนมา</p>
+                      <p style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '1rem', margin: '2px 0 0' }}>
+                        {format(d, 'd MMMM yyyy', { locale: th })}
+                      </p>
+                    </div>
+                    <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '6px' }}>
+                      <p className="record-check-label">🔔 ควรตรวจเต้านม</p>
+                      <p className="record-check-date">
+                        {format(checkStart, 'd MMM', { locale: th })} –{' '}
+                        {format(checkEnd, 'd MMM yyyy', { locale: th })}
+                      </p>
+                    </div>
+                    {r.note && <p className="record-note" style={{ marginTop: '4px' }}>{r.note}</p>}
                   </div>
                 </div>
               )

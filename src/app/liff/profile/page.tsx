@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import type Liff from '@line/liff'
-import { User, Calendar, ClipboardList, Loader2, AlertTriangle } from 'lucide-react'
+import { User, Calendar, ClipboardList, Loader2, AlertTriangle, Droplet } from 'lucide-react'
 import ProfileTab from './components/ProfileTab'
 import MenstrualTab from './components/MenstrualTab'
 import SelfExamTab from './components/SelfExamTab'
@@ -18,8 +18,8 @@ interface UserProfile {
 
 const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
   { id: 'profile', label: 'ข้อมูลของฉัน', icon: <User size={18} /> },
-  { id: 'menstrual', label: 'ประจำเดือน', icon: <Calendar size={18} /> },
-  { id: 'selfexam', label: 'บันทึกตรวจ', icon: <ClipboardList size={18} /> },
+  { id: 'menstrual', label: 'บันทึกประจำเดือน', icon: <Droplet size={18} /> },
+  { id: 'selfexam', label: 'บันทึกผลตรวจ', icon: <ClipboardList size={18} /> },
 ]
 
 export default function ProfilePage() {
@@ -112,21 +112,9 @@ export default function ProfilePage() {
         <div className="profile-header-logo">
           <img src="/logo-bse.png" alt="BSE" style={{ height: '40px', width: 'auto', objectFit: 'contain', borderRadius: '8px', backgroundColor: 'white' }} />
         </div>
-        <h1 className="profile-header-title">ข้อมูลส่วนตัว</h1>
-      </div>
-
-      {/* Tab Navigation */}
-      <div className="profile-tab-nav">
-        {TABS.map(tab => (
-          <button
-            key={tab.id}
-            className={`profile-tab-btn ${activeTab === tab.id ? 'profile-tab-btn--active' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            {tab.icon}
-            <span>{tab.label}</span>
-          </button>
-        ))}
+        <h1 className="profile-header-title">
+          {TABS.find(t => t.id === activeTab)?.label ?? 'ข้อมูลส่วนตัว'}
+        </h1>
       </div>
 
       {/* Tab Content */}
@@ -150,6 +138,20 @@ export default function ProfilePage() {
             lineUserId={profile?.userId ?? ''}
           />
         )}
+      </div>
+
+      {/* Bottom Tab Navigation */}
+      <div className="profile-bottom-nav">
+        {TABS.map(tab => (
+          <button
+            key={tab.id}
+            className={`profile-bottom-nav-btn ${activeTab === tab.id ? 'profile-bottom-nav-btn--active' : ''}`}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            {tab.icon}
+            <span>{tab.label}</span>
+          </button>
+        ))}
       </div>
     </div>
   )

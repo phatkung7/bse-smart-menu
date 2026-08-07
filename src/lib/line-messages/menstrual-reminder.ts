@@ -24,7 +24,7 @@ export function buildMenstrualReminderMessage(
     altText: `บันทึกวันประจำเดือน ${periodStr} — แนะนำตรวจเต้านม ${checkStartStr}–${checkEndStr}`,
     contents: {
       type: 'bubble',
-      size: 'kilo',
+      size: 'mega',
       header: {
         type: 'box',
         layout: 'vertical',
@@ -88,14 +88,16 @@ export function buildMenstrualReminderMessage(
                 size: 'sm',
                 color: '#1D4ED8',
                 weight: 'bold',
+                wrap: true,
                 margin: 'md',
               },
               {
                 type: 'text',
                 text: `${checkStartStr} – ${checkEndStr}`,
-                size: 'xl',
+                size: 'lg',
                 weight: 'bold',
                 color: '#D63384',
+                wrap: true,
                 margin: 'sm',
               },
               {
@@ -110,24 +112,6 @@ export function buildMenstrualReminderMessage(
           },
         ],
         paddingAll: '20px',
-      },
-      footer: {
-        type: 'box',
-        layout: 'vertical',
-        contents: [
-          {
-            type: 'button',
-            action: {
-              type: 'uri',
-              label: 'บันทึกผลการตรวจ',
-              uri: profileUrl,
-            },
-            style: 'primary',
-            color: '#D63384',
-            height: 'sm',
-          },
-        ],
-        paddingAll: '12px',
       },
     },
   }
