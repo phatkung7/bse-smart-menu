@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import type Liff from '@line/liff'
-import { calculateScorePercentage } from '@/lib/quiz-calculator'
+import { calculateScorePercentage, type QuizResult } from '@/lib/quiz-calculator'
 import { HeartPulse, Share2, CheckCircle2, AlertTriangle, Lightbulb } from 'lucide-react'
 
 interface UserProfile {

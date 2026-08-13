@@ -11,7 +11,7 @@ export function buildAppointmentSuccessMessage(
 ): messagingApi.FlexMessage {
   const dateStr = format(appointmentDate, 'd MMMM yyyy เวลา HH:mm น.', { locale: th })
 
-  const contentBlocks = []
+  const contentBlocks: messagingApi.FlexComponent[] = []
   
   if (doctorName) {
     contentBlocks.push({
@@ -118,7 +118,7 @@ export function buildAppointmentSuccessMessage(
               spacing: 'sm',
               contents: contentBlocks,
             }
-          ] : [])
+          ] as messagingApi.FlexComponent[] : [])
         ],
         paddingAll: '20px',
       }
