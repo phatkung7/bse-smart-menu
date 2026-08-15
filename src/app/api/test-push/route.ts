@@ -53,8 +53,8 @@ export async function GET() {
             layout: 'baseline',
             spacing: 'sm',
             contents: [
-              { type: 'text', text: 'วันที่:', color: '#aaaaaa', size: 'sm', flex: 1 },
-              { type: 'text', text: dateStr, wrap: true, color: '#666666', size: 'sm', flex: 3 }
+              { type: 'text', text: 'วันที่:', color: '#aaaaaa', size: 'sm', flex: 2 },
+              { type: 'text', text: dateStr, wrap: true, color: '#666666', size: 'sm', flex: 5 }
             ]
           },
           {
@@ -62,8 +62,8 @@ export async function GET() {
             layout: 'baseline',
             spacing: 'sm',
             contents: [
-              { type: 'text', text: 'แพทย์:', color: '#aaaaaa', size: 'sm', flex: 1 },
-              { type: 'text', text: 'นพ. สมชาย ใจดี', wrap: true, color: '#666666', size: 'sm', flex: 3 }
+              { type: 'text', text: 'แพทย์:', color: '#aaaaaa', size: 'sm', flex: 2 },
+              { type: 'text', text: 'นพ. สมชาย ใจดี', wrap: true, color: '#666666', size: 'sm', flex: 5 }
             ]
           },
           {
@@ -71,8 +71,8 @@ export async function GET() {
             layout: 'baseline',
             spacing: 'sm',
             contents: [
-              { type: 'text', text: 'สถานที่:', color: '#aaaaaa', size: 'sm', flex: 1 },
-              { type: 'text', text: 'โรงพยาบาลภูมิพล', wrap: true, color: '#666666', size: 'sm', flex: 3 }
+              { type: 'text', text: 'สถานที่:', color: '#aaaaaa', size: 'sm', flex: 2 },
+              { type: 'text', text: 'โรงพยาบาลภูมิพล', wrap: true, color: '#666666', size: 'sm', flex: 5 }
             ]
           },
           {
@@ -80,8 +80,8 @@ export async function GET() {
             layout: 'baseline',
             spacing: 'sm',
             contents: [
-              { type: 'text', text: 'หมายเหตุ:', color: '#aaaaaa', size: 'sm', flex: 1 },
-              { type: 'text', text: 'กรุณางดน้ำและอาหารก่อนมาตรวจ 8 ชั่วโมง', wrap: true, color: '#666666', size: 'sm', flex: 3 }
+              { type: 'text', text: 'หมายเหตุ:', color: '#aaaaaa', size: 'sm', flex: 2 },
+              { type: 'text', text: 'กรุณางดน้ำและอาหารก่อนมาตรวจ 8 ชั่วโมง', wrap: true, color: '#666666', size: 'sm', flex: 5 }
             ]
           }
         ]

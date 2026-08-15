@@ -87,8 +87,8 @@ export async function GET(req: NextRequest) {
                   layout: 'baseline',
                   spacing: 'sm',
                   contents: [
-                    { type: 'text', text: 'วันที่:', color: '#aaaaaa', size: 'sm', flex: 1 },
-                    { type: 'text', text: dateStr, wrap: true, color: '#666666', size: 'sm', flex: 3 }
+                    { type: 'text', text: 'วันที่:', color: '#aaaaaa', size: 'sm', flex: 2 },
+                    { type: 'text', text: dateStr, wrap: true, color: '#666666', size: 'sm', flex: 5 }
                   ]
                 },
                 ...(appt.doctor_name ? [{
@@ -96,8 +96,8 @@ export async function GET(req: NextRequest) {
                   layout: 'baseline',
                   spacing: 'sm',
                   contents: [
-                    { type: 'text', text: 'แพทย์:', color: '#aaaaaa', size: 'sm', flex: 1 },
-                    { type: 'text', text: appt.doctor_name, wrap: true, color: '#666666', size: 'sm', flex: 3 }
+                    { type: 'text', text: 'แพทย์:', color: '#aaaaaa', size: 'sm', flex: 2 },
+                    { type: 'text', text: appt.doctor_name, wrap: true, color: '#666666', size: 'sm', flex: 5 }
                   ]
                 }] : []),
                 ...(appt.hospital_name ? [{
@@ -105,8 +105,8 @@ export async function GET(req: NextRequest) {
                   layout: 'baseline',
                   spacing: 'sm',
                   contents: [
-                    { type: 'text', text: 'สถานที่:', color: '#aaaaaa', size: 'sm', flex: 1 },
-                    { type: 'text', text: appt.hospital_name, wrap: true, color: '#666666', size: 'sm', flex: 3 }
+                    { type: 'text', text: 'สถานที่:', color: '#aaaaaa', size: 'sm', flex: 2 },
+                    { type: 'text', text: appt.hospital_name, wrap: true, color: '#666666', size: 'sm', flex: 5 }
                   ]
                 }] : []),
                 ...(appt.note ? [{
@@ -114,8 +114,8 @@ export async function GET(req: NextRequest) {
                   layout: 'baseline',
                   spacing: 'sm',
                   contents: [
-                    { type: 'text', text: 'หมายเหตุ:', color: '#aaaaaa', size: 'sm', flex: 1 },
-                    { type: 'text', text: appt.note, wrap: true, color: '#666666', size: 'sm', flex: 3 }
+                    { type: 'text', text: 'หมายเหตุ:', color: '#aaaaaa', size: 'sm', flex: 2 },
+                    { type: 'text', text: appt.note, wrap: true, color: '#666666', size: 'sm', flex: 5 }
                   ]
                 }] : [])
               ]
