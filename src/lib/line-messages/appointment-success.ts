@@ -7,7 +7,8 @@ export function buildAppointmentSuccessMessage(
   doctorName: string,
   hospitalName: string,
   note: string,
-  liffBaseUrl: string
+  liffBaseUrl: string,
+  reminderDays?: number
 ): messagingApi.FlexMessage {
   const dateStr = format(appointmentDate, 'd MMMM yyyy เวลา HH:mm น.', { locale: th })
 
@@ -45,6 +46,22 @@ export function buildAppointmentSuccessMessage(
       contents: [
         { type: 'text', text: '📝 โน้ต:', color: '#aaaaaa', size: 'sm', flex: 2 },
         { type: 'text', text: note, wrap: true, color: '#666666', size: 'sm', flex: 5 },
+      ],
+    })
+  }
+
+  if (reminderDays && reminderDays > 0) {
+    const notifDate = new Date(appointmentDate)
+    notifDate.setDate(notifDate.getDate() - reminderDays)
+    const notifDateStr = format(notifDate, 'd MMMM yyyy', { locale: th })
+
+    contentBlocks.push({
+      type: 'box',
+      layout: 'baseline',
+      spacing: 'sm',
+      contents: [
+        { type: 'text', text: '🔔 แจ้งเตือน:', color: '#aaaaaa', size: 'sm', flex: 2 },
+        { type: 'text', text: `ล่วงหน้า ${reminderDays} วัน (${notifDateStr})`, wrap: true, color: '#2563EB', size: 'sm', flex: 5, weight: 'bold' },
       ],
     })
   }

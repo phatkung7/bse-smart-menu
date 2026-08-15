@@ -84,7 +84,8 @@ export async function POST(req: NextRequest) {
       data.doctor_name || '', 
       data.hospital_name || '', 
       data.note || '', 
-      liffBaseUrl
+      liffBaseUrl,
+      data.reminder_days
     ) as any
 
     pushMessage(userId, [msg]).catch((err) =>
