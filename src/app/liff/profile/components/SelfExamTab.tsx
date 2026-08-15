@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { th } from 'date-fns/locale'
-import { ClipboardList, Loader2, PlusCircle, Pencil, Trash2, Check, X } from 'lucide-react'
+import { ClipboardList, Loader2, PlusCircle, Pencil, Trash2, Check, X, AlertCircle } from 'lucide-react'
 
 interface SelfExamRecord {
   id: string
@@ -21,8 +21,10 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
   const [records, setRecords] = useState<SelfExamRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [examDate, setExamDate] = useState(new Date().toISOString().split('T')[0])
   const [note, setNote] = useState('')
+
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editNote, setEditNote] = useState('')
   const [editDate, setEditDate] = useState('')
@@ -58,14 +60,20 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
 
   useEffect(() => { fetchRecords() }, [])
 
-  const handleAdd = async () => {
+  const handleAddClick = () => {
     if (!note.trim()) { showError('กรุณากรอกบันทึกผลการตรวจ'); return }
+    setShowConfirmModal(true)
+  }
+
+  const executeSave = async () => {
+    setShowConfirmModal(false)
     setSaving(true); setErrorMsg(''); setSuccessMsg('')
     const res = await fetch('/api/self-exam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id_token: idToken, line_user_id: lineUserId, exam_date: examDate, note }),
     })
+    
     if (res.ok) {
       setNote('')
       setExamDate(new Date().toISOString().split('T')[0])
@@ -130,6 +138,33 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
         </div>
       )}
 
+      {/* Modal ยืนยันการบันทึก */}
+      {showConfirmModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-icon" style={{ color: 'var(--primary)' }}>
+              <AlertCircle size={48} />
+            </div>
+            <h3 className="modal-title">ยืนยันการบันทึก</h3>
+            <p className="modal-message">
+              คุณต้องการบันทึกผลการตรวจวันที่<br/>
+              <strong style={{ color: 'var(--primary)', fontSize: '1.2rem', display: 'block', margin: '4px 0 12px' }}>
+                {format(new Date(examDate), 'd MMMM yyyy', { locale: th })}
+              </strong>
+
+            </p>
+            <div className="modal-actions">
+              <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowConfirmModal(false)}>
+                ยกเลิก
+              </button>
+              <button className="btn btn-primary" style={{ flex: 1 }} onClick={executeSave}>
+                ยืนยัน
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Form เพิ่มบันทึกใหม่ */}
       <div className="profile-card">
         <h2 className="profile-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -151,7 +186,9 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
             onChange={e => setNote(e.target.value)}
           />
         </div>
-        <button className="btn btn-primary btn-large" onClick={handleAdd} disabled={saving || !note.trim()}>
+
+
+        <button className="btn btn-primary btn-large" onClick={handleAddClick} disabled={saving || !note.trim()}>
           {saving ? <Loader2 size={18} className="animate-spin" /> : <PlusCircle size={18} />}
           {saving ? 'กำลังบันทึก...' : 'บันทึก'}
         </button>

@@ -35,6 +35,7 @@ export interface DbUser {
   line_user_id: string
   display_name: string | null
   picture_url: string | null
+  tester_id: string | null
   followed_at: string
   is_active: boolean
   created_at: string

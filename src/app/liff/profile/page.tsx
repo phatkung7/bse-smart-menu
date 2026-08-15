@@ -28,6 +28,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [idToken, setIdToken] = useState<string | null>(null)
   const [latestResult, setLatestResult] = useState<any | null>(null)
+  const [testerId, setTesterId] = useState<string | null>(null)
   const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function ProfilePage() {
     // [Mock Mode] dev without LIFF
     if (!liffId && process.env.NODE_ENV === 'development') {
       setProfile({ userId: 'mock-user-id-1234', displayName: 'นักพัฒนา (Mock)', pictureUrl: null })
+      setTesterId('MOCK001')
       setAppState('ready')
       return
     }
@@ -72,6 +74,15 @@ export default function ProfilePage() {
         if (resResult?.ok) {
           const d = await resResult.json()
           setLatestResult(d.result ?? null)
+        }
+
+        // ดึงข้อมูล profile เพิ่มเติม (tester_id)
+        const resProfile = await fetch(`/api/user/profile?line_user_id=${userProfile.userId}`).catch(() => null)
+        if (resProfile?.ok) {
+          const p = await resProfile.json()
+          if (p.data?.tester_id) {
+            setTesterId(p.data.tester_id)
+          }
         }
 
         setAppState('ready')
@@ -124,6 +135,7 @@ export default function ProfilePage() {
             displayName={profile?.displayName ?? ''}
             pictureUrl={profile?.pictureUrl}
             latestResult={latestResult}
+            testerId={testerId}
           />
         )}
         {activeTab === 'menstrual' && (

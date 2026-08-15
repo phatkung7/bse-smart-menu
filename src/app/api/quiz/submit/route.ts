@@ -10,6 +10,7 @@ interface SubmitBody {
   line_user_id: string
   display_name?: string
   picture_url?: string
+  tester_id?: string | null
   answers: { question_number: number; score: number }[]
 }
 
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  let { id_token, line_user_id, display_name, picture_url, answers } = body
+  let { id_token, line_user_id, display_name, picture_url, tester_id, answers } = body
 
   // --- Verify LIFF ID Token ---
   if (id_token) {
@@ -102,6 +103,7 @@ export async function POST(req: NextRequest) {
         line_user_id,
         display_name: display_name ?? null,
         picture_url: picture_url ?? null,
+        tester_id: tester_id ?? null,
         updated_at: new Date().toISOString(),
       },
       { onConflict: 'line_user_id', ignoreDuplicates: false }

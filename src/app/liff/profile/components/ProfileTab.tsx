@@ -12,15 +12,16 @@ interface ProfileTabProps {
   displayName: string
   pictureUrl?: string | null
   latestResult?: QuizResultSummary | null
+  testerId?: string | null
 }
 
 const LEVEL_LABELS = {
-  high: { text: 'สูง', color: '#28a745', bg: '#d4edda', emoji: '🟢' },
-  medium: { text: 'ปานกลาง', color: '#856404', bg: '#fff3cd', emoji: '🟡' },
-  low: { text: 'ต่ำ', color: '#721c24', bg: '#f8d7da', emoji: '🔴' },
+  high: { text: 'ความรอบรู้ระดับสูง', bgGrad: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', glowColor: 'rgba(16, 185, 129, 0.6)', borderColor: '#047857' },
+  medium: { text: 'ความรอบรู้ระดับปานกลาง', bgGrad: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', glowColor: 'rgba(245, 158, 11, 0.6)', borderColor: '#b45309' },
+  low: { text: 'ความรอบรู้ระดับต่ำ', bgGrad: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)', glowColor: 'rgba(239, 68, 68, 0.6)', borderColor: '#991b1b' },
 }
 
-export default function ProfileTab({ displayName, pictureUrl, latestResult }: ProfileTabProps) {
+export default function ProfileTab({ displayName, pictureUrl, latestResult, testerId }: ProfileTabProps) {
   return (
     <div className="profile-tab-content">
       {/* ข้อมูลผู้ใช้ */}
@@ -35,8 +36,16 @@ export default function ProfileTab({ displayName, pictureUrl, latestResult }: Pr
           )}
         </div>
         <div className="profile-identity-info">
-          <p className="profile-identity-label">ชื่อผู้ใช้ LINE</p>
-          <p className="profile-identity-name">{displayName}</p>
+          <div>
+            <p className="profile-identity-label">ชื่อผู้ใช้ LINE</p>
+            <p className="profile-identity-name">{displayName}</p>
+          </div>
+          {testerId && (
+            <div style={{ marginTop: '8px' }}>
+              <p className="profile-identity-label">รหัสผู้ทดสอบ</p>
+              <p className="profile-identity-name" style={{ fontSize: '1.1rem', color: 'var(--primary)' }}>{testerId}</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -54,16 +63,17 @@ export default function ProfileTab({ displayName, pictureUrl, latestResult }: Pr
             </div>
             <div className="quiz-level-row">
               <span className="quiz-level-label">ระดับ</span>
-              <span
-                className="quiz-level-badge"
+              <div
+                className="quiz-level-badge glowing-3d-badge"
                 style={{
-                  backgroundColor: LEVEL_LABELS[latestResult.literacy_level].bg,
-                  color: LEVEL_LABELS[latestResult.literacy_level].color,
-                }}
+                  '--bg-grad': LEVEL_LABELS[latestResult.literacy_level].bgGrad,
+                  '--glow-color': LEVEL_LABELS[latestResult.literacy_level].glowColor,
+                  '--border-color-3d': LEVEL_LABELS[latestResult.literacy_level].borderColor,
+                } as React.CSSProperties}
               >
-                {LEVEL_LABELS[latestResult.literacy_level].emoji}{' '}
-                {LEVEL_LABELS[latestResult.literacy_level].text}
-              </span>
+                <span className="pulse-dot"></span>
+                <span className="pulse-text">{LEVEL_LABELS[latestResult.literacy_level].text}</span>
+              </div>
             </div>
             <p className="quiz-completed-at">
               ประเมินเมื่อ:{' '}

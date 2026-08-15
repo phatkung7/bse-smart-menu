@@ -19,8 +19,8 @@ export function buildAppointmentSuccessMessage(
       layout: 'baseline',
       spacing: 'sm',
       contents: [
-        { type: 'text', text: '👨‍⚕️ แพทย์:', color: '#aaaaaa', size: 'sm', flex: 1 },
-        { type: 'text', text: doctorName, wrap: true, color: '#666666', size: 'sm', flex: 3 },
+        { type: 'text', text: '👨‍⚕️ แพทย์:', color: '#aaaaaa', size: 'sm', flex: 2 },
+        { type: 'text', text: doctorName, wrap: true, color: '#666666', size: 'sm', flex: 5 },
       ],
     })
   }
@@ -31,8 +31,8 @@ export function buildAppointmentSuccessMessage(
       layout: 'baseline',
       spacing: 'sm',
       contents: [
-        { type: 'text', text: '🏥 รพ.:', color: '#aaaaaa', size: 'sm', flex: 1 },
-        { type: 'text', text: hospitalName, wrap: true, color: '#666666', size: 'sm', flex: 3 },
+        { type: 'text', text: '🏥 รพ.:', color: '#aaaaaa', size: 'sm', flex: 2 },
+        { type: 'text', text: hospitalName, wrap: true, color: '#666666', size: 'sm', flex: 5 },
       ],
     })
   }
@@ -43,8 +43,8 @@ export function buildAppointmentSuccessMessage(
       layout: 'baseline',
       spacing: 'sm',
       contents: [
-        { type: 'text', text: '📝 โน้ต:', color: '#aaaaaa', size: 'sm', flex: 1 },
-        { type: 'text', text: note, wrap: true, color: '#666666', size: 'sm', flex: 3 },
+        { type: 'text', text: '📝 โน้ต:', color: '#aaaaaa', size: 'sm', flex: 2 },
+        { type: 'text', text: note, wrap: true, color: '#666666', size: 'sm', flex: 5 },
       ],
     })
   }

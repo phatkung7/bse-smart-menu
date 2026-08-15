@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { format, addDays } from 'date-fns'
 import { th } from 'date-fns/locale'
-import { Calendar, Loader2, CheckCircle2, PlusCircle, Clock } from 'lucide-react'
+import { Calendar, Loader2, CheckCircle2, PlusCircle, Clock, AlertCircle } from 'lucide-react'
 
 interface MenstrualRecord {
   id: string
@@ -21,6 +21,7 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
   const [records, setRecords] = useState<MenstrualRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
   const [note, setNote] = useState('')
   const [savedResult, setSavedResult] = useState<{ checkStart: Date; checkEnd: Date } | null>(null)
@@ -56,11 +57,16 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
     fetchRecords()
   }, [])
 
-  const handleSave = async () => {
+  const handleSaveClick = () => {
     if (!selectedDate) {
       showError('กรุณาเลือกวันที่ประจำเดือนมา')
       return
     }
+    setShowConfirmModal(true)
+  }
+
+  const executeSave = async () => {
+    setShowConfirmModal(false)
     setSaving(true)
     setErrorMsg('')
     setSuccessMsg('')
@@ -109,6 +115,33 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
         </div>
       )}
 
+      {/* Modal ยืนยันการบันทึก */}
+      {showConfirmModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-icon" style={{ color: 'var(--primary)' }}>
+              <AlertCircle size={48} />
+            </div>
+            <h3 className="modal-title">ยืนยันการบันทึก</h3>
+            <p className="modal-message">
+              คุณต้องการบันทึกข้อมูลวันที่ประจำเดือนมาคือ<br/>
+              <strong style={{ color: 'var(--primary)', fontSize: '1.2rem', display: 'block', margin: '8px 0' }}>
+                {format(new Date(selectedDate), 'd MMMM yyyy', { locale: th })}
+              </strong>
+              ใช่หรือไม่?
+            </p>
+            <div className="modal-actions">
+              <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowConfirmModal(false)}>
+                ยกเลิก
+              </button>
+              <button className="btn btn-primary" style={{ flex: 1 }} onClick={executeSave}>
+                ยืนยัน
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Form บันทึกวันประจำเดือน */}
       <div className="profile-card">
         <h2 className="profile-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -141,7 +174,7 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
 
         <button
           className="btn btn-primary btn-large"
-          onClick={handleSave}
+          onClick={handleSaveClick}
           disabled={saving || !selectedDate}
         >
           {saving ? <Loader2 size={18} className="animate-spin" /> : <PlusCircle size={18} />}

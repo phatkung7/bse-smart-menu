@@ -10,15 +10,28 @@ interface UserProfile {
 
 interface IntroScreenProps {
   profile: UserProfile
-  onStart: () => void
+  initialTesterId: string
+  onStart: (testerId: string) => void
 }
 
-import { ClipboardList, Clock, BarChart2, ShieldCheck, HeartPulse, Rocket } from 'lucide-react'
+import { useState } from 'react'
+import { ClipboardList, Clock, BarChart2, ShieldCheck, HeartPulse, Rocket, UserCheck } from 'lucide-react'
 
 /**
  * Intro Screen — แนะนำแบบสอบถามก่อนเริ่ม
  */
-export default function IntroScreen({ profile, onStart }: IntroScreenProps) {
+export default function IntroScreen({ profile, initialTesterId, onStart }: IntroScreenProps) {
+  const [testerId, setTesterId] = useState(initialTesterId)
+  const [error, setError] = useState('')
+
+  const handleStart = () => {
+    if (!testerId.trim()) {
+      setError('กรุณาระบุรหัสผู้ทดสอบ')
+      return
+    }
+    setError('')
+    onStart(testerId.trim())
+  }
   return (
     <div className="intro-screen">
       {/* Header */}
@@ -41,6 +54,23 @@ export default function IntroScreen({ profile, onStart }: IntroScreenProps) {
         <p className="greeting-text">
           สวัสดีคุณ <strong>{profile.displayName}</strong> 👋
         </p>
+      </div>
+
+      {/* Tester ID Input */}
+      <div className="intro-form-group">
+        <label htmlFor="testerId" className="intro-label">
+          <UserCheck size={20} className="text-primary" /> รหัสผู้ทดสอบ {!initialTesterId && <span className="intro-label-req">*</span>}
+        </label>
+        <input
+          type="text"
+          id="testerId"
+          value={testerId}
+          onChange={(e) => setTesterId(e.target.value)}
+          placeholder="เช่น BSE001"
+          className="intro-input"
+          readOnly={!!initialTesterId}
+        />
+        {error && <p className="intro-error">{error}</p>}
       </div>
 
       {/* Info cards */}
@@ -101,7 +131,7 @@ export default function IntroScreen({ profile, onStart }: IntroScreenProps) {
         <button
           id="btn-start-quiz"
           className="btn btn-primary btn-large flex items-center justify-center gap-2"
-          onClick={onStart}
+          onClick={handleStart}
         >
           <Rocket size={20} />
           เริ่มทำแบบสอบถาม

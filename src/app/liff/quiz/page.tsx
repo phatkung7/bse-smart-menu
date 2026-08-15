@@ -29,6 +29,7 @@ export default function QuizPage() {
   const [result, setResult] = useState<QuizResult | null>(null)
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [errorMsg, setErrorMsg] = useState<string>('')
+  const [testerId, setTesterId] = useState<string>('')
 
   // Initialize LIFF
   useEffect(() => {
@@ -42,6 +43,7 @@ export default function QuizPage() {
         displayName: 'นักพัฒนา (Mock)',
         pictureUrl: 'https://ui-avatars.com/api/?name=Dev&background=D63384&color=fff',
       })
+      setTesterId('MOCK001')
       setAppState('intro')
       return
     }
@@ -69,6 +71,19 @@ export default function QuizPage() {
           displayName: userProfile.displayName,
           pictureUrl: userProfile.pictureUrl ?? undefined,
         })
+        
+        try {
+          const res = await fetch(`/api/user/profile?line_user_id=${userProfile.userId}`)
+          if (res.ok) {
+            const { data } = await res.json()
+            if (data?.tester_id) {
+              setTesterId(data.tester_id)
+            }
+          }
+        } catch (e) {
+          console.error('[QuizPage] Failed to fetch user profile', e)
+        }
+
         setAppState('intro')
       } catch (err) {
         console.error('[LIFF] Init error:', err)
@@ -113,6 +128,7 @@ export default function QuizPage() {
           line_user_id: profile.userId,
           display_name: profile.displayName,
           picture_url: profile.pictureUrl,
+          tester_id: testerId,
           answers: answersArray,
         }),
       })
@@ -137,7 +153,8 @@ export default function QuizPage() {
     }
   }
 
-  const handleStart = () => {
+  const handleStart = (finalTesterId: string) => {
+    setTesterId(finalTesterId)
     setAnswers({})
     setAppState('quiz')
   }
@@ -151,7 +168,7 @@ export default function QuizPage() {
     <div className="quiz-app">
       {appState === 'loading' && <LoadingScreen />}
       {appState === 'intro' && profile && (
-        <IntroScreen profile={profile} onStart={handleStart} />
+        <IntroScreen profile={profile} initialTesterId={testerId} onStart={handleStart} />
       )}
       {appState === 'quiz' && (
         <QuizScreen
