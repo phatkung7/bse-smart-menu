@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { pushMessage } from '@/lib/line-client'
-import { format, differenceInDays, startOfDay } from 'date-fns'
+import { differenceInDays, startOfDay } from 'date-fns'
+import { formatInTimeZone } from 'date-fns-tz'
 import { th } from 'date-fns/locale'
 
 export const dynamic = 'force-dynamic'
@@ -47,7 +48,7 @@ export async function GET(req: NextRequest) {
       if (daysDiff === reminderDays) {
         
         // 4. สร้างข้อความ Flex Message
-        const dateStr = format(apptDate, 'd MMMM yyyy เวลา HH:mm น.', { locale: th })
+        const dateStr = formatInTimeZone(apptDate, 'Asia/Bangkok', 'd MMMM yyyy เวลา HH:mm น.', { locale: th })
         const flexMessage = {
           type: 'flex',
           altText: `แจ้งเตือนการนัดหมาย: ${dateStr}`,

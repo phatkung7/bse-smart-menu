@@ -1,5 +1,6 @@
 import type { messagingApi } from '@line/bot-sdk'
-import { format, addDays } from 'date-fns'
+import { addDays } from 'date-fns'
+import { formatInTimeZone } from 'date-fns-tz'
 import { th } from 'date-fns/locale'
 
 /**
@@ -13,9 +14,9 @@ export function buildMenstrualReminderMessage(
   const checkStart = addDays(periodStartDate, 7)
   const checkEnd = addDays(periodStartDate, 10)
 
-  const periodStr = format(periodStartDate, 'd MMMM yyyy', { locale: th })
-  const checkStartStr = format(checkStart, 'd MMMM', { locale: th })
-  const checkEndStr = format(checkEnd, 'd MMMM yyyy', { locale: th })
+  const periodStr = formatInTimeZone(periodStartDate, 'Asia/Bangkok', 'd MMMM yyyy', { locale: th })
+  const checkStartStr = formatInTimeZone(checkStart, 'Asia/Bangkok', 'd MMMM', { locale: th })
+  const checkEndStr = formatInTimeZone(checkEnd, 'Asia/Bangkok', 'd MMMM yyyy', { locale: th })
 
   const profileUrl = `${liffBaseUrl}/liff/profile`
 

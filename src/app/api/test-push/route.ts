@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { pushMessage } from '@/lib/line-client'
-import { format } from 'date-fns'
+import { formatInTimeZone } from 'date-fns-tz'
 import { th } from 'date-fns/locale'
 
 export const dynamic = 'force-dynamic'
@@ -11,7 +11,7 @@ export async function GET() {
   const apptDate = new Date()
   apptDate.setDate(apptDate.getDate() + reminderDays)
   apptDate.setHours(10, 30, 0, 0)
-  const dateStr = format(apptDate, 'd MMMM yyyy เวลา HH:mm น.', { locale: th })
+  const dateStr = formatInTimeZone(apptDate, 'Asia/Bangkok', 'd MMMM yyyy เวลา HH:mm น.', { locale: th })
   const liffBaseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? ''
 
   const flexMessage = {

@@ -1,5 +1,5 @@
 import type { messagingApi } from '@line/bot-sdk'
-import { format } from 'date-fns'
+import { formatInTimeZone } from 'date-fns-tz'
 import { th } from 'date-fns/locale'
 
 export function buildSelfExamSuccessMessage(
@@ -7,7 +7,7 @@ export function buildSelfExamSuccessMessage(
   note: string,
   liffBaseUrl: string
 ): messagingApi.FlexMessage {
-  const dateStr = format(examDate, 'd MMMM yyyy', { locale: th })
+  const dateStr = formatInTimeZone(examDate, 'Asia/Bangkok', 'd MMMM yyyy', { locale: th })
 
   return {
     type: 'flex',

@@ -59,7 +59,7 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
 
   const handleSaveClick = () => {
     if (!selectedDate) {
-      showError('กรุณาเลือกวันที่ประจำเดือนมา')
+      showError('กรุณาเลือกวันที่มีประจำเดือนวันสุดท้าย')
       return
     }
     setShowConfirmModal(true)
@@ -124,7 +124,7 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
             </div>
             <h3 className="modal-title">ยืนยันการบันทึก</h3>
             <p className="modal-message">
-              คุณต้องการบันทึกข้อมูลวันที่ประจำเดือนมาคือ<br/>
+              คุณต้องการบันทึกข้อมูลวันที่มีประจำเดือนวันสุดท้ายคือ<br/>
               <strong style={{ color: 'var(--primary)', fontSize: '1.2rem', display: 'block', margin: '8px 0' }}>
                 {format(new Date(selectedDate), 'd MMMM yyyy', { locale: th })}
               </strong>
@@ -148,10 +148,8 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
           <Calendar size={18} className="text-primary" style={{ flexShrink: 0 }} />
           บันทึกวันประจำเดือน
         </h2>
-        <p className="profile-card-subtitle">เลือกวันแรกที่ประจำเดือนมา</p>
-
         <div className="form-group">
-          <label className="form-label">วันที่ประจำเดือนมา</label>
+          <label className="form-label">วันที่มีประจำเดือนวันสุดท้าย</label>
           <input
             type="date"
             className="form-input"

@@ -1,5 +1,5 @@
 import type { messagingApi } from '@line/bot-sdk'
-import { format } from 'date-fns'
+import { formatInTimeZone } from 'date-fns-tz'
 import { th } from 'date-fns/locale'
 
 export function buildAppointmentSuccessMessage(
@@ -10,7 +10,7 @@ export function buildAppointmentSuccessMessage(
   liffBaseUrl: string,
   reminderDays?: number
 ): messagingApi.FlexMessage {
-  const dateStr = format(appointmentDate, 'd MMMM yyyy เวลา HH:mm น.', { locale: th })
+  const dateStr = formatInTimeZone(appointmentDate, 'Asia/Bangkok', 'd MMMM yyyy เวลา HH:mm น.', { locale: th })
 
   const contentBlocks: messagingApi.FlexComponent[] = []
   
@@ -53,7 +53,7 @@ export function buildAppointmentSuccessMessage(
   if (reminderDays && reminderDays > 0) {
     const notifDate = new Date(appointmentDate)
     notifDate.setDate(notifDate.getDate() - reminderDays)
-    const notifDateStr = format(notifDate, 'd MMMM yyyy', { locale: th })
+    const notifDateStr = formatInTimeZone(notifDate, 'Asia/Bangkok', 'd MMMM yyyy', { locale: th })
 
     contentBlocks.push({
       type: 'box',

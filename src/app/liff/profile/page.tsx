@@ -32,6 +32,12 @@ export default function ProfilePage() {
   const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const tabParam = params.get('tab') as TabId
+    if (tabParam && ['profile', 'menstrual', 'selfexam'].includes(tabParam)) {
+      setActiveTab(tabParam)
+    }
+
     const liffId = process.env.NEXT_PUBLIC_LIFF_PROFILE_ID ?? process.env.NEXT_PUBLIC_LIFF_ID
 
     // [Mock Mode] dev without LIFF
