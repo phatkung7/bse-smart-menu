@@ -86,3 +86,18 @@ export async function getUserProfile(userId: string) {
     return null
   }
 }
+
+/**
+ * เปลี่ยน Rich Menu ให้ user คนเดียว (มีผลทันที)
+ */
+export async function linkRichMenuToUser(
+  userId: string,
+  richMenuId: string
+): Promise<void> {
+  try {
+    await lineClient.linkRichMenuIdToUser(userId, richMenuId)
+  } catch (error) {
+    console.error(`[LINE] Link rich menu to ${userId} failed:`, error)
+    throw error
+  }
+}

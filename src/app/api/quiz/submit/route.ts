@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { pushMessage } from '@/lib/line-client'
+import { pushMessage, linkRichMenuToUser } from '@/lib/line-client'
 import { calculateQuizResult, validateAnswers } from '@/lib/quiz-calculator'
 import { buildResultNotificationMessage } from '@/lib/line-messages/result-notification'
 import { TOTAL_QUESTIONS } from '@/data/questions'
@@ -168,6 +168,20 @@ export async function POST(req: NextRequest) {
   pushMessage(line_user_id, [resultMsg]).catch((err) =>
     console.error('[Quiz Submit] Push message failed:', err)
   )
+
+  // --- Set Rich Menu ตาม literacy level ---
+  const RICH_MENU_MAP: Record<string, string | undefined> = {
+    low: process.env.RICH_MENU_ID_LOW,
+    medium: process.env.RICH_MENU_ID_MEDIUM,
+    high: process.env.RICH_MENU_ID_HIGH,
+  }
+
+  const targetRichMenuId = RICH_MENU_MAP[result.literacyLevel]
+  if (targetRichMenuId) {
+    linkRichMenuToUser(line_user_id, targetRichMenuId).catch((err) =>
+      console.error('[Quiz Submit] Link rich menu failed:', err)
+    )
+  }
 
   return NextResponse.json({
     success: true,

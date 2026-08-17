@@ -30,7 +30,6 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
   const [editDate, setEditDate] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
 
   const authHeaders = (): Record<string, string> => {
     if (idToken) return { 'x-id-token': idToken }
@@ -88,7 +87,6 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
 
   const handleStartEdit = (r: SelfExamRecord) => {
     setEditingId(r.id); setEditNote(r.note); setEditDate(r.exam_date)
-    setDeleteConfirmId(null)
   }
 
   const handleSaveEdit = async (id: string) => {
@@ -105,21 +103,6 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
     } else {
       const e = await res.json()
       showError(e.error ?? 'แก้ไขข้อมูลไม่สำเร็จ')
-    }
-  }
-
-  const handleDelete = async (id: string) => {
-    const res = await fetch(`/api/self-exam/${id}`, {
-      method: 'DELETE',
-      headers: authHeaders(),
-    })
-    if (res.ok) {
-      setDeleteConfirmId(null)
-      showSuccess('ลบข้อมูลสำเร็จ')
-      await fetchRecords()
-    } else {
-      const e = await res.json()
-      showError(e.error ?? 'ลบข้อมูลไม่สำเร็จ')
     }
   }
 
@@ -149,7 +132,7 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
             <p className="modal-message">
               คุณต้องการบันทึกผลการตรวจวันที่<br/>
               <strong style={{ color: 'var(--primary)', fontSize: '1.2rem', display: 'block', margin: '4px 0 12px' }}>
-                {format(new Date(examDate), 'd MMMM yyyy', { locale: th })}
+                {format(new Date(examDate), 'dd/MM/yyyy', { locale: th })}
               </strong>
 
             </p>
@@ -229,26 +212,13 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
                   <>
                     <div className="self-exam-record-header">
                       <span className="record-date-badge">
-                        {format(new Date(r.exam_date), 'd MMM yyyy', { locale: th })}
+                        {format(new Date(r.exam_date), 'dd/MM/yyyy', { locale: th })}
                       </span>
                       <div className="record-actions">
                         <button className="btn-icon-sm" onClick={() => handleStartEdit(r)} title="แก้ไข">
                           <Pencil size={14} />
                         </button>
-                        {deleteConfirmId === r.id ? (
-                          <>
-                            <button className="btn-icon-sm btn-icon-sm--danger" onClick={() => handleDelete(r.id)}>
-                              <Trash2 size={14} /> ยืนยันลบ
-                            </button>
-                            <button className="btn-icon-sm" onClick={() => setDeleteConfirmId(null)}>
-                              <X size={14} />
-                            </button>
-                          </>
-                        ) : (
-                          <button className="btn-icon-sm" onClick={() => setDeleteConfirmId(r.id)} title="ลบ">
-                            <Trash2 size={14} />
-                          </button>
-                        )}
+
                       </div>
                     </div>
                     <p className="self-exam-note">{r.note}</p>

@@ -7,9 +7,9 @@ import QuizScreen from './components/QuizScreen'
 import ResultScreen from './components/ResultScreen'
 import { TOTAL_QUESTIONS } from '@/data/questions'
 import { calculateQuizResult, QuizResult } from '@/lib/quiz-calculator'
-import { HeartPulse, Loader2, Send, AlertTriangle } from 'lucide-react'
+import { HeartPulse, Loader2, Send, AlertTriangle, Check } from 'lucide-react'
 
-type AppState = 'loading' | 'intro' | 'quiz' | 'submitting' | 'result' | 'error'
+type AppState = 'loading' | 'intro' | 'quiz' | 'submitting' | 'result' | 'error' | 'already-done'
 
 interface UserProfile {
   userId: string
@@ -75,9 +75,13 @@ export default function QuizPage() {
         try {
           const res = await fetch(`/api/user/profile?line_user_id=${userProfile.userId}`)
           if (res.ok) {
-            const { data } = await res.json()
-            if (data?.tester_id) {
-              setTesterId(data.tester_id)
+            const json = await res.json()
+            if (json.data?.tester_id) {
+              setTesterId(json.data.tester_id)
+            }
+            if (json.has_completed_quiz) {
+              setAppState('already-done')
+              return
             }
           }
         } catch (e) {
@@ -187,6 +191,7 @@ export default function QuizPage() {
         />
       )}
       {appState === 'error' && <ErrorScreen message={errorMsg} onRetry={handleRetry} />}
+      {appState === 'already-done' && <AlreadyDoneScreen liff={liff} />}
     </div>
   )
 }
@@ -233,6 +238,50 @@ function ErrorScreen({
       <button className="btn btn-primary" onClick={onRetry}>
         ลองใหม่อีกครั้ง
       </button>
+    </div>
+  )
+}
+
+function AlreadyDoneScreen({ liff }: { liff: typeof Liff | null }) {
+  const handleClose = () => {
+    if (liff) {
+      liff.closeWindow()
+    } else {
+      window.close()
+    }
+  }
+
+  return (
+    <div className="loading-screen" style={{ textAlign: 'center' }}>
+      <div style={{ marginBottom: '24px' }}>
+        <img src="/logo-bse.png" alt="BSE Logo" style={{ height: '100px', width: 'auto', objectFit: 'contain', borderRadius: '20px', backgroundColor: 'white' }} />
+      </div>
+
+      <div style={{
+        background: 'white',
+        borderRadius: '20px',
+        padding: '32px 24px',
+        margin: '0 20px',
+        boxShadow: '0 8px 32px rgba(37, 99, 235, 0.12)',
+        border: '1px solid rgba(37, 99, 235, 0.1)',
+      }}>
+        <div style={{ marginBottom: '16px' }}>
+          <Check size={56} color="#10b981" strokeWidth={2.5} />
+        </div>
+        <h2 style={{ color: 'var(--text-primary)', fontSize: '1.3rem', fontWeight: 700, marginBottom: '12px', lineHeight: 1.4 }}>
+          ท่านได้ทำแบบประเมินระดับ<br/>ความรอบรู้ด้านสุขภาพดิจิทัลแล้ว
+        </h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '24px' }}>
+          ขอบคุณที่สละเวลาทำแบบประเมิน<br/>ท่านสามารถดูผลการประเมินได้ที่หน้าโปรไฟล์
+        </p>
+        <button
+          className="btn btn-primary btn-large"
+          onClick={handleClose}
+          style={{ width: '100%', maxWidth: '280px', padding: '14px 24px', fontSize: '1.1rem' }}
+        >
+          ปิดหน้าต่าง
+        </button>
+      </div>
     </div>
   )
 }

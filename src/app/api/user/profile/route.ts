@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { linkRichMenuToUser } from '@/lib/line-client'
+
+const RICH_MENU_MAP: Record<string, string | undefined> = {
+  low: process.env.RICH_MENU_ID_LOW,
+  medium: process.env.RICH_MENU_ID_MEDIUM,
+  high: process.env.RICH_MENU_ID_HIGH,
+}
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -24,7 +31,27 @@ export async function GET(req: NextRequest) {
       throw error
     }
 
-    return NextResponse.json({ data })
+    // --- ดึงผลคัดกรองล่าสุด แล้ว set Rich Menu ให้ทันที ---
+    const { data: latestResult } = await supabaseAdmin
+      .from('quiz_results')
+      .select('literacy_level')
+      .eq('line_user_id', lineUserId)
+      .order('completed_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    const hasCompletedQuiz = !!latestResult?.literacy_level
+
+    if (latestResult?.literacy_level) {
+      const richMenuId = RICH_MENU_MAP[latestResult.literacy_level]
+      if (richMenuId) {
+        linkRichMenuToUser(lineUserId, richMenuId).catch((err) =>
+          console.error('[User Profile API] Link rich menu failed:', err)
+        )
+      }
+    }
+
+    return NextResponse.json({ data, has_completed_quiz: hasCompletedQuiz })
   } catch (err: any) {
     console.error('[User Profile API] Error fetching user:', err)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })

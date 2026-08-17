@@ -189,8 +189,8 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
           <p className="menstrual-result-title">บันทึกสำเร็จ! ✅</p>
           <p className="menstrual-result-subtitle">วันแนะนำตรวจเต้านมด้วยตนเอง</p>
           <p className="menstrual-result-date">
-            {format(savedResult.checkStart, 'd MMM', { locale: th })} –{' '}
-            {format(savedResult.checkEnd, 'd MMMM yyyy', { locale: th })}
+            {format(savedResult.checkStart, 'dd/MM/yyyy', { locale: th })} –{' '}
+            {format(savedResult.checkEnd, 'dd/MM/yyyy', { locale: th })}
           </p>
           <p className="menstrual-result-note">
             หลังจากหมดประจำเดือนแล้ว 7–10 วัน เป็นช่วงเวลาที่เต้านมนุ่มที่สุด
@@ -224,14 +224,14 @@ export default function MenstrualTab({ idToken, lineUserId }: MenstrualTabProps)
                     <div style={{ marginBottom: '6px' }}>
                       <p className="record-check-label">📅 ประจำเดือนมา</p>
                       <p style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '1rem', margin: '2px 0 0' }}>
-                        {format(d, 'd MMMM yyyy', { locale: th })}
+                        {format(d, 'dd/MM/yyyy', { locale: th })}
                       </p>
                     </div>
                     <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '6px' }}>
                       <p className="record-check-label">🔔 ควรตรวจเต้านม</p>
                       <p className="record-check-date">
-                        {format(checkStart, 'd MMM', { locale: th })} –{' '}
-                        {format(checkEnd, 'd MMM yyyy', { locale: th })}
+                        {format(checkStart, 'dd/MM/yyyy', { locale: th })} –{' '}
+                        {format(checkEnd, 'dd/MM/yyyy', { locale: th })}
                       </p>
                     </div>
                     {r.note && <p className="record-note" style={{ marginTop: '4px' }}>{r.note}</p>}

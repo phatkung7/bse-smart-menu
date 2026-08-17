@@ -70,9 +70,12 @@ export async function POST(req: NextRequest) {
   const liffBaseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? ''
   const periodDate = new Date(period_start_date)
   const msg = buildMenstrualReminderMessage(periodDate, liffBaseUrl)
-  pushMessage(userId, [msg]).catch((err) =>
+  try {
+    await pushMessage(userId, [msg])
+  } catch (err: any) {
     console.error('[Menstrual] Push message failed:', err)
-  )
+    return NextResponse.json({ error: 'Push message failed: ' + err.message }, { status: 500 })
+  }
 
   return NextResponse.json({ success: true, record: data })
 }
