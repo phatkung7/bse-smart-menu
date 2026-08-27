@@ -83,7 +83,7 @@ export function buildSelfExamDailyReminderMessage(
             action: {
               type: 'uri',
               label: 'บันทึกผลการตรวจ',
-              uri: `${liffBaseUrl}/liff/profile?tab=selfexam`
+              uri: `https://liff.line.me/${process.env.NEXT_PUBLIC_LIFF_PROFILE_ID}?tab=selfexam`
             },
             style: 'primary',
             color: '#E83E8C'
