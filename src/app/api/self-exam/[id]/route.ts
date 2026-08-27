@@ -12,14 +12,14 @@ interface RouteParams {
  */
 export async function PUT(req: NextRequest, { params }: RouteParams) {
   const { id } = await params
-  let body: { id_token?: string; line_user_id?: string; exam_date?: string; note?: string }
+  let body: { id_token?: string; line_user_id?: string; exam_date?: string; note?: string; next_expected_period_date?: string }
   try {
     body = await req.json()
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { id_token, line_user_id, exam_date, note } = body
+  const { id_token, line_user_id, exam_date, note, next_expected_period_date } = body
 
   if (!note || !note.trim()) {
     return NextResponse.json({ error: 'note is required' }, { status: 400 })
@@ -47,6 +47,7 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
     .update({
       note: note.trim(),
       exam_date: exam_date ?? undefined,
+      next_expected_period_date: next_expected_period_date || null,
       updated_at: new Date().toISOString(),
     })
     .eq('id', id)

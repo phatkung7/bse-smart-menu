@@ -9,6 +9,7 @@ interface SelfExamRecord {
   id: string
   exam_date: string
   note: string
+  next_expected_period_date?: string | null
   created_at: string
 }
 
@@ -24,10 +25,12 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [examDate, setExamDate] = useState(new Date().toISOString().split('T')[0])
   const [note, setNote] = useState('')
+  const [nextExpectedPeriodDate, setNextExpectedPeriodDate] = useState('')
 
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editNote, setEditNote] = useState('')
   const [editDate, setEditDate] = useState('')
+  const [editNextExpectedPeriodDate, setEditNextExpectedPeriodDate] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
 
@@ -70,11 +73,18 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
     const res = await fetch('/api/self-exam', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id_token: idToken, line_user_id: lineUserId, exam_date: examDate, note }),
+      body: JSON.stringify({ 
+        id_token: idToken, 
+        line_user_id: lineUserId, 
+        exam_date: examDate, 
+        note,
+        next_expected_period_date: nextExpectedPeriodDate || undefined 
+      }),
     })
     
     if (res.ok) {
       setNote('')
+      setNextExpectedPeriodDate('')
       setExamDate(new Date().toISOString().split('T')[0])
       showSuccess('บันทึกข้อมูลสำเร็จ')
       await fetchRecords()
@@ -86,7 +96,10 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
   }
 
   const handleStartEdit = (r: SelfExamRecord) => {
-    setEditingId(r.id); setEditNote(r.note); setEditDate(r.exam_date)
+      setEditingId(r.id)
+      setEditNote(r.note)
+      setEditDate(r.exam_date)
+      setEditNextExpectedPeriodDate(r.next_expected_period_date ?? '')
   }
 
   const handleSaveEdit = async (id: string) => {
@@ -94,7 +107,13 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
     const res = await fetch(`/api/self-exam/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id_token: idToken, line_user_id: lineUserId, exam_date: editDate, note: editNote }),
+      body: JSON.stringify({ 
+        id_token: idToken, 
+        line_user_id: lineUserId, 
+        exam_date: editDate, 
+        note: editNote,
+        next_expected_period_date: editNextExpectedPeriodDate || undefined 
+      }),
     })
     if (res.ok) {
       setEditingId(null)
@@ -160,6 +179,11 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
             onChange={e => setExamDate(e.target.value)} />
         </div>
         <div className="form-group">
+          <label className="form-label">วันที่คาดว่าจะมีประจำเดือนรอบถัดไป (ไม่บังคับ)</label>
+          <input type="date" className="form-input" value={nextExpectedPeriodDate}
+            onChange={e => setNextExpectedPeriodDate(e.target.value)} />
+        </div>
+        <div className="form-group">
           <label className="form-label">ผลการตรวจ / บันทึก</label>
           <textarea
             className="form-textarea"
@@ -195,7 +219,9 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
                   // Edit Mode
                   <div className="edit-form">
                     <input type="date" className="form-input" value={editDate} max={todayStr}
-                      onChange={e => setEditDate(e.target.value)} />
+                      onChange={e => setEditDate(e.target.value)} title="วันที่ตรวจ" />
+                    <input type="date" className="form-input" value={editNextExpectedPeriodDate}
+                      onChange={e => setEditNextExpectedPeriodDate(e.target.value)} title="วันที่คาดว่าจะมีประจำเดือนรอบถัดไป (ไม่บังคับ)" />
                     <textarea className="form-textarea" rows={3} value={editNote}
                       onChange={e => setEditNote(e.target.value)} />
                     <div className="edit-actions">
@@ -222,6 +248,11 @@ export default function SelfExamTab({ idToken, lineUserId }: SelfExamTabProps) {
                       </div>
                     </div>
                     <p className="self-exam-note">{r.note}</p>
+                    {r.next_expected_period_date && (
+                      <p className="self-exam-note" style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '4px' }}>
+                        คาดการณ์ประจำเดือน: {format(new Date(r.next_expected_period_date), 'dd/MM/yyyy', { locale: th })}
+                      </p>
+                    )}
                   </>
                 )}
               </div>

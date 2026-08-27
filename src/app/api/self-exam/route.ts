@@ -34,14 +34,14 @@ export async function GET(req: NextRequest) {
  * บันทึกผลการตรวจเต้านมใหม่
  */
 export async function POST(req: NextRequest) {
-  let body: { id_token?: string; line_user_id?: string; exam_date: string; note: string }
+  let body: { id_token?: string; line_user_id?: string; exam_date: string; note: string; next_expected_period_date?: string }
   try {
     body = await req.json()
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { id_token, line_user_id, exam_date, note } = body
+  const { id_token, line_user_id, exam_date, note, next_expected_period_date } = body
 
   if (!note || !note.trim()) {
     return NextResponse.json({ error: 'note is required' }, { status: 400 })
@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
       line_user_id: userId,
       exam_date: exam_date ?? new Date().toISOString().split('T')[0],
       note: note.trim(),
+      next_expected_period_date: next_expected_period_date || null,
     })
     .select()
     .single()

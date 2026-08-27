@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
   try {
     const today = new Date()
 
-    // 2. Fetch all menstrual records
+    // 2. Fetch all menstrual records and self exam expected dates
     const { data: menstrualRecords, error: mrError } = await supabaseAdmin
       .from('menstrual_records')
       .select('line_user_id, period_start_date')
@@ -26,21 +26,45 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Database error' }, { status: 500 })
     }
 
-    if (!menstrualRecords || menstrualRecords.length === 0) {
-      return NextResponse.json({ success: true, message: 'No records found' })
+    const { data: selfExamExpectedRecords, error: seError } = await supabaseAdmin
+      .from('self_exam_records')
+      .select('line_user_id, next_expected_period_date')
+      .not('next_expected_period_date', 'is', null)
+
+    if (seError) {
+      console.error('[MenstrualCron] DB Error (self exam):', seError)
+      // Continue anyway, just without expected dates
     }
 
     let notifiedCount = 0
     const liffBaseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? ''
 
-    // Group the latest record per user to avoid duplicate reminders for older records
-    // Assuming users might have multiple records, we only care about the latest one.
+    // Group the latest record per user from both sources
     const latestRecordsMap = new Map<string, string>() // Map<line_user_id, period_start_date>
-    for (const record of menstrualRecords) {
-      const existingDate = latestRecordsMap.get(record.line_user_id)
-      if (!existingDate || new Date(record.period_start_date) > new Date(existingDate)) {
-        latestRecordsMap.set(record.line_user_id, record.period_start_date)
+    
+    // Add actual menstrual dates
+    if (menstrualRecords) {
+      for (const record of menstrualRecords) {
+        const existingDate = latestRecordsMap.get(record.line_user_id)
+        if (!existingDate || new Date(record.period_start_date) > new Date(existingDate)) {
+          latestRecordsMap.set(record.line_user_id, record.period_start_date)
+        }
       }
+    }
+
+    // Compare with and add expected menstrual dates
+    if (selfExamExpectedRecords) {
+      for (const record of selfExamExpectedRecords) {
+        if (!record.next_expected_period_date) continue;
+        const existingDate = latestRecordsMap.get(record.line_user_id)
+        if (!existingDate || new Date(record.next_expected_period_date) > new Date(existingDate)) {
+          latestRecordsMap.set(record.line_user_id, record.next_expected_period_date)
+        }
+      }
+    }
+
+    if (latestRecordsMap.size === 0) {
+      return NextResponse.json({ success: true, message: 'No records found' })
     }
 
     for (const [userId, periodStartDateStr] of Array.from(latestRecordsMap.entries())) {
